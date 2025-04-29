@@ -12,7 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class TestEntity {
+public class A_TestEntity {
     @Id // 기본키 설정 애너테이션
     @GeneratedValue(strategy = GenerationType.IDENTITY) // MySQL의 AUTO_INCREMENT에 맞춰서 자동 증가 전략 사용
     @Column(name = "id", updatable = false) // updatable 속성: 수정 될 수 있는지 여부를 명시 생략 가능
