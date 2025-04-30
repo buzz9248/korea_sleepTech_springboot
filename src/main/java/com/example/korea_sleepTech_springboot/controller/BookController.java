@@ -4,6 +4,8 @@ import com.example.korea_sleepTech_springboot.common.ApiMappingPattern;
 import com.example.korea_sleepTech_springboot.dto.request.BookCreateReqDto;
 import com.example.korea_sleepTech_springboot.dto.request.BookUpdateReqDto;
 import com.example.korea_sleepTech_springboot.dto.response.BookRespDto;
+import com.example.korea_sleepTech_springboot.dto.response.ResponseDto;
+import com.example.korea_sleepTech_springboot.entity.C_Category;
 import com.example.korea_sleepTech_springboot.service.BookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,10 +28,14 @@ public class BookController {
     // 1. 기본 CRUD
     // 1) CREATE - BOOK 생성
     @PostMapping
-    public ResponseEntity<BookRespDto> createBook(@RequestBody BookCreateReqDto dto) {
-        BookRespDto book = bookService.createBook(dto);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(book);
+    public ResponseEntity<ResponseDto<BookRespDto>> createBook(@RequestBody BookCreateReqDto dto) {
+        try {
+            ResponseDto<BookRespDto> book = bookService.createBook(dto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(book);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     // 2) READ - 전체 책 조회
@@ -62,5 +68,69 @@ public class BookController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    // 2. 검색 & 필터링 (@RequestParam)
+    // : GET 메서드
+
+    // 1) 제목에 특정 단어가 포함된 책 조회
+    @GetMapping("/search/title")
+    public ResponseEntity<ResponseDto<List<BookRespDto>>> getBooksByTitleContaining(@RequestParam String keyword) {
+        // @RequestParam: 경로값에 ? 이후의 데이터를 키-값 쌍으로 추출되는 값 (?키=값)
+        //                  >> 키의 변수에 값이 할당
+        //                  >> localhost:8080/books/search/?keyword=xxxx
+        // +) @RequestParam은 항상 문자열로 반환
+        // >> 숫자형은 int, Long으로 자동 변환
+        // - 변환 실패 시 400 에러가 발생
+        try {
+            ResponseDto<List<BookRespDto>> books = bookService.getBooksByTitleContaining(keyword);
+
+            return ResponseEntity.status(HttpStatus.OK).body(books);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+
+    }
+
+    // 2) 카테고리별 책 조회
+    @GetMapping("/category/{category}")
+    public ResponseEntity<ResponseDto<List<BookRespDto>>> getBooksByCategory(@PathVariable C_Category category) {
+        try {
+        ResponseDto<List<BookRespDto>> books = bookService.getBooksByCategory(category);
+        return ResponseEntity.status(HttpStatus.OK).body(books);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+    }
+
+    // cf) 제목 검색 vs. 카테고리별 조회
+    // 제목 검색) Query Parameter 사용
+    //              >> GET /books/search/title?keyword=xxxx
+    // : "제목에 특정 단어가 포함되어 있는 책"들을 검색
+    // - 정확한 자원을 가리키는 것이 아니라 필터 조건을 제시하는 형태
+
+    // 카테고리별 조회) Path Variable 사용
+    //                  >> GET /books/category/NOVEL
+    // : Category 값이 어떤 고정된 그룹(NOVEL, ESSAY, POEM 등) 중 하나
+    // - "A라는 카테고리에 속한 책 리스트" 라는 명확한 리소스를 가리키는 URI로 간주
+
+    // 3) 카테고리와 작성자별 책 조회
+    // : 복합 조건 검색은 보통 Query Parameter를 조합해서 처리
+    @GetMapping("/search/category-writer")
+    public ResponseEntity<ResponseDto<List<BookRespDto>>> getBooksByCategoryAndWriter(@RequestParam(required = false) C_Category category, @RequestParam String writer) {
+        // cf) (required = false) 옵션: 해당 매개변수는 필수값 X
+        // - GET /books/search/category-writer?category=xxx&writer=yyy
+        // - GET /books/search/category-writer?writer=yyy
+        try {
+            ResponseDto<List<BookRespDto>> books = bookService.getBooksByCategoryAndWriter(category, writer);
+            return ResponseEntity.status(HttpStatus.OK).body(books);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+
+    }
 
 }
