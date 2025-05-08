@@ -23,26 +23,26 @@ public class CommentController {
 
     // 1) 댓글 생성
     @PostMapping
-    public ResponseEntity<ResponseDto<CommentRespDto>> createComment(@Valid @RequestBody CommentCreateReqDto dto) {
-        ResponseDto<CommentRespDto> response = commentService.createComment(dto);
+    public ResponseEntity<ResponseDto<CommentRespDto>> createComment(@PathVariable Long postId, @Valid @RequestBody CommentCreateReqDto dto) {
+        ResponseDto<CommentRespDto> response = commentService.createComment(postId, dto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
 
     // 2) 댓글 수정
-    @PutMapping("/{id}")
-    public ResponseEntity<ResponseDto<CommentRespDto>> updateComment(@PathVariable Long id, @Valid @RequestBody CommentUpdateReqDto dto) {
-        ResponseDto<CommentRespDto> response = commentService.updateComment(id, dto);
+    @PutMapping("/{commentId}")
+    public ResponseEntity<ResponseDto<CommentRespDto>> updateComment(@PathVariable Long postId, @PathVariable Long commentId, @Valid @RequestBody CommentUpdateReqDto dto) {
+        ResponseDto<CommentRespDto> response = commentService.updateComment(postId, commentId, dto);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
 
     // 3) 댓글 삭제
-    @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseDto<Void>> deleteComment(@PathVariable Long id) {
-        ResponseDto<Void> response = commentService.deleteComment(id);
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<ResponseDto<Void>> deleteComment(@PathVariable Long postId, @PathVariable Long commentId) {
+        ResponseDto<Void> response = commentService.deleteComment(postId, commentId);
 
         return ResponseEntity.noContent().build();
     }
