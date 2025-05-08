@@ -2,6 +2,7 @@ package com.example.korea_sleepTech_springboot.service.implementations;
 
 import com.example.korea_sleepTech_springboot.common.ResponseMessage;
 import com.example.korea_sleepTech_springboot.dto.request.CommentCreateReqDto;
+import com.example.korea_sleepTech_springboot.dto.request.CommentUpdateReqDto;
 import com.example.korea_sleepTech_springboot.dto.response.CommentRespDto;
 import com.example.korea_sleepTech_springboot.dto.response.ResponseDto;
 import com.example.korea_sleepTech_springboot.entity.D_Comment;
@@ -38,7 +39,7 @@ public class CommentServiceImpl implements CommentService {
         CommentRespDto respDto = null;
 
         // Post가 존재하는 지 확인
-        D_Post post = postRepository.findById(dto.getPostId()).orElseThrow(() -> new EntityNotFoundException("Post not found with id: " + dto.getPostId()));
+        D_Post post = postRepository.findById(dto.getPostId()).orElseThrow(() -> new EntityNotFoundException(ResponseMessage.NOT_EXISTS_POST + dto.getPostId()));
 
         // 새로운 Comment 생성
         D_Comment newComment = D_Comment.builder()
@@ -57,5 +58,38 @@ public class CommentServiceImpl implements CommentService {
                 .build();
 
         return ResponseDto.setSuccess(ResponseMessage.SUCCESS, respDto);
+    }
+
+    @Override
+    @Transactional
+    public ResponseDto<CommentRespDto> updateComment(Long id, CommentUpdateReqDto dto) {
+        CommentRespDto respDto = null;
+
+        D_Comment comment = commentRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(ResponseMessage.NOT_EXISTS_COMMENT + id));
+
+        comment.setContent(dto.getContent());
+
+        D_Comment updatedComment = commentRepository.save(comment);
+
+        respDto = CommentRespDto.builder()
+                .id(updatedComment.getId())
+                .postId(updatedComment.getPost().getId())
+                .content(updatedComment.getContent())
+                .commenter(updatedComment.getCommenter())
+                .build();
+
+        return ResponseDto.setSuccess(ResponseMessage.SUCCESS, respDto);
+    }
+
+    @Override
+    @Transactional
+    public ResponseDto<Void> deleteComment(Long id) {
+        if (!commentRepository.existsById(id)) {
+            throw new EntityNotFoundException(ResponseMessage.NOT_EXISTS_COMMENT + id);
+        }
+
+        commentRepository.deleteById(id);
+
+        return ResponseDto.setSuccess(ResponseMessage.SUCCESS, null);
     }
 }

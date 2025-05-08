@@ -2,6 +2,7 @@ package com.example.korea_sleepTech_springboot.controller;
 
 import com.example.korea_sleepTech_springboot.common.ApiMappingPattern;
 import com.example.korea_sleepTech_springboot.dto.request.PostCreateReqDto;
+import com.example.korea_sleepTech_springboot.dto.request.PostUpdateReqDto;
 import com.example.korea_sleepTech_springboot.dto.response.PostDetailRespDto;
 import com.example.korea_sleepTech_springboot.dto.response.PostListRespDto;
 import com.example.korea_sleepTech_springboot.dto.response.ResponseDto;
@@ -48,6 +49,20 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.OK).body(posts);
     }
 
+
+    // 4) 게시물 수정
+    @PutMapping("/{id}")
+    public ResponseEntity<ResponseDto<PostDetailRespDto>> updatePost(@PathVariable Long id, @Valid @RequestBody PostUpdateReqDto dto) {
+        ResponseDto<PostDetailRespDto> response = postService.updatePost(id, dto);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    // 5) 게시물 삭제
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ResponseDto<Void>> deletePost(@PathVariable Long id) {
+        ResponseDto<Void> response = postService.deletePost(id);
+        return ResponseEntity.noContent().build();
+    }
 
 
 
