@@ -41,20 +41,30 @@ public class CommentServiceImpl implements CommentService {
         // Post가 존재하는 지 확인
         D_Post post = postRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException(ResponseMessage.NOT_EXISTS_POST + postId));
 
+        // cf) D_Post의 addComment()를 호출하지 않고, 직접적으로 post를 설정하여 양방향 관계를 수동으로 설정
         // 새로운 Comment 생성
         D_Comment newComment = D_Comment.builder()
                 .content(dto.getContent())
                 .commenter(dto.getCommenter())
-                .post(post)
                 .build();
+
+        post.addComment(newComment); // D_Comment가 D_Post에 추가되고 동시에 post 필드가 설정
 
         D_Comment savedComment = commentRepository.save(newComment);
 
-        respDto = CommentRespDto.builder()
+//        respDto = CommentRespDto.builder()
+//                .id(savedComment.getId())
+//                .postId(savedComment.getPost().getId())
+//                .content(savedComment.getContent())
+//                .commenter(savedComment.getCommenter())
+//                .build();
+
+//        respDto = new CommentRespDto.Builder("필수 값) 내용 입력", "필수 값) 작성자")
+//                .build();
+
+        respDto = new CommentRespDto.Builder(savedComment.getContent(), savedComment.getCommenter())
                 .id(savedComment.getId())
                 .postId(savedComment.getPost().getId())
-                .content(savedComment.getContent())
-                .commenter(savedComment.getCommenter())
                 .build();
 
         return ResponseDto.setSuccess(ResponseMessage.SUCCESS, respDto);
@@ -96,6 +106,10 @@ public class CommentServiceImpl implements CommentService {
             throw new IllegalArgumentException("Comment does not belong to the specified Post");
         }
 
+        // == 연관 관계를 해제 == //
+        comment.getPost().removeComment(comment);
+
+        // == DB에서 삭제 == //
         commentRepository.delete(comment);
 
         return ResponseDto.setSuccess(ResponseMessage.SUCCESS, null);

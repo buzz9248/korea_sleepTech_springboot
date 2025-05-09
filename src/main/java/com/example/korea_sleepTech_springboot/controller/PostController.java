@@ -5,6 +5,7 @@ import com.example.korea_sleepTech_springboot.dto.request.PostCreateReqDto;
 import com.example.korea_sleepTech_springboot.dto.request.PostUpdateReqDto;
 import com.example.korea_sleepTech_springboot.dto.response.PostDetailRespDto;
 import com.example.korea_sleepTech_springboot.dto.response.PostListRespDto;
+import com.example.korea_sleepTech_springboot.dto.response.PostWithCommentCountRespDto;
 import com.example.korea_sleepTech_springboot.dto.response.ResponseDto;
 import com.example.korea_sleepTech_springboot.service.PostService;
 import jakarta.validation.Valid;
@@ -64,10 +65,38 @@ public class PostController {
         return ResponseEntity.noContent().build();
     }
 
+    // ============================================================== //
+    // PostController의 메인 경로: "/api/v1/posts"
+
+    // 6) 특정 작성자의 모든 게시글 조회
+    @GetMapping("/author/{author}")
+    public ResponseEntity<ResponseDto<List<PostListRespDto>>> findPostsByAuthor(@PathVariable String author) {
+        ResponseDto<List<PostListRespDto>> response = postService.getPostByAuthor(author);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    // 7) 특정 키워드로 제목 검색
+    @GetMapping("/search")
+    public ResponseEntity<ResponseDto<List<PostListRespDto>>> searchPostsByTitle(@RequestParam String keyword) {
+        ResponseDto<List<PostListRespDto>> response = postService.searchPostsByTitle(keyword);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    // 8) 댓글이 가장 많은 상위 5개의 게시글 조회
+    @GetMapping("/top-comments")
+    public ResponseEntity<ResponseDto<List<PostWithCommentCountRespDto>>> getTop5PostsByComments() {
+        ResponseDto<List<PostWithCommentCountRespDto>> response = postService.getTop5PostsByComments();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    // 9) 특정 키워드를 포함하는 댓글이 달린 게시글 조회
+    //      >> "스프링"이라는 키워드를 포함한 댓글이 달린 모든 게시물을 조회
 
 
 
 
+    // 10) 특정 작성자의 게시글 중에서 댓글 수가 일정 개수 이상인 게시글 조회
+    //      >> 특정 author 가 작성한 게시글 중에서 댓글이 3개 이상인 게시글을 조회
 
 
 }

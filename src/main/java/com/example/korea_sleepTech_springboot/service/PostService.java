@@ -4,6 +4,7 @@ import com.example.korea_sleepTech_springboot.dto.request.PostCreateReqDto;
 import com.example.korea_sleepTech_springboot.dto.request.PostUpdateReqDto;
 import com.example.korea_sleepTech_springboot.dto.response.PostDetailRespDto;
 import com.example.korea_sleepTech_springboot.dto.response.PostListRespDto;
+import com.example.korea_sleepTech_springboot.dto.response.PostWithCommentCountRespDto;
 import com.example.korea_sleepTech_springboot.dto.response.ResponseDto;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
@@ -17,4 +18,9 @@ public interface PostService {
     ResponseDto<List<PostListRespDto>> getAllPosts();
     ResponseDto<PostDetailRespDto> updatePost(Long id, @Valid PostUpdateReqDto dto);
     ResponseDto<Void> deletePost(Long id);
+
+    ResponseDto<List<PostListRespDto>> getPostByAuthor(String author);
+    ResponseDto<List<PostListRespDto>> searchPostsByTitle(String keyword);
+
+    ResponseDto<List<PostWithCommentCountRespDto>> getTop5PostsByComments();
 }

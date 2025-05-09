@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS comment (
     commenter VARCHAR(255) NOT NULL,
     FOREIGN KEY (post_id) REFERENCES post(id) ON DELETE CASCADE
 );
-
+USE springboot_db;
 SELECT * FROM post;
 SELECT * FROM comment;
 
