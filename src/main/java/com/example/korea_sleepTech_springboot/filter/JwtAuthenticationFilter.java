@@ -19,27 +19,27 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 /*
-* === JwtAuthenticationFilter ===
-* : JWT 인증 필터
-* - 요청에서 JWT 토큰을 추출
-* - request의 header 에서 토큰을 추출하여 검증
-*   >> 유효한 경우 security의 context에 인증 정보 설정
-*
-* cf) Spring Security이 OncePerRequestFilter를 상속받아 매 요청 시 실행
-* */
+ * === JwtAuthenticationFilter ===
+ * : JWT 인증 필터
+ * - 요청에서 JWT 토큰을 추출
+ * - request의 header 에서 토큰을 추출하여 검증
+ *   >> 유효한 경우 security의 context에 인증 정보 설정
+ *
+ * cf) Spring Security이 OncePerRequestFilter를 상속받아 매 요청 시 실행
+ * */
 @Component // 스프링에서 해당 클래스를 관리하도록 지정, 의존성 주입
 @RequiredArgsConstructor // 생성자 주입
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtProvider jwtProvider;
 
     /*
-    * doFilterInternal
-    * : 요청 시 헤더의 Authorization 에서 JWT 토큰을 추출
-    * - JwtProvider 에서 만든 removeBearer()을 호출하여 토큰을 파싱
-    * - JwtProvider 를 사용하여 토큰 검증 및 "사용자 ID 추출"
-    *
-    * >> 추출한 사용자 ID를 바탕으로 SecurityContext에 인증 정보를 설정하는 메서드 호출
-    * */
+     * doFilterInternal
+     * : 요청 시 헤더의 Authorization 에서 JWT 토큰을 추출
+     * - JwtProvider 에서 만든 removeBearer()을 호출하여 토큰을 파싱
+     * - JwtProvider 를 사용하여 토큰 검증 및 "사용자 ID 추출"
+     *
+     * >> 추출한 사용자 ID를 바탕으로 SecurityContext에 인증 정보를 설정하는 메서드 호출
+     * */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
@@ -72,16 +72,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     /*
-    * === setAuthenticationContext ===
-    * : SecurityContext에 인증 정보를 설정하는 메서드
-    *
-    * - setAuthenticationContext()는 요청에서 username 값을 SecurityContext에 인증 정보로 설정
-    *   : UsernamePasswordAuthenticationToken 을 생성하고
-    *       , 해당 토큰에 username 값을 넣어 인증정보로 등록
-    *
-    * >> Spring Security는 SecurityContextHolder에 있는 인증 정보를 자동으로
-    *       , 컨트롤러의 메서드에 주입시킬 수 있음 (@AuthenticationPrincipal)
-    * */
+     * === setAuthenticationContext ===
+     * : SecurityContext에 인증 정보를 설정하는 메서드
+     *
+     * - setAuthenticationContext()는 요청에서 username 값을 SecurityContext에 인증 정보로 설정
+     *   : UsernamePasswordAuthenticationToken 을 생성하고
+     *       , 해당 토큰에 username 값을 넣어 인증정보로 등록
+     *
+     * >> Spring Security는 SecurityContextHolder에 있는 인증 정보를 자동으로
+     *       , 컨트롤러의 메서드에 주입시킬 수 있음 (@AuthenticationPrincipal)
+     * */
     private void setAuthenticationContext(HttpServletRequest request, String username) {
         // 사용자 ID를 바탕으로 UsernamePasswordAuthenticationToken (인증 토큰) 생성
         // : 기본 설정 - 권한 없음

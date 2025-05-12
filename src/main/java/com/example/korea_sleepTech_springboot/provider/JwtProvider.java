@@ -1,5 +1,7 @@
 package com.example.korea_sleepTech_springboot.provider;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -46,6 +48,10 @@ public class JwtProvider {
         this.jwtExpirationMs = jwtExpirationMs;
     }
 
+    public int getExpiration() {
+        return jwtExpirationMs;
+    }
+
     /*
     * generateJwtToken
     * : JWT 생성 메서드
@@ -68,14 +74,71 @@ public class JwtProvider {
                 .compact();
     }
 
+    /*
+    * === removeBearer ===
+    * JWT 에서 Bearer 접두사 제거
+    *
+    * @Param: 접두사가 포함된 JWT 문자열
+    * @Return: "Bearer "이 제거된 JWT
+    *
+    * cf) Bearer(소유자)
+    *       : 클라이언트에서 JWT 토큰 내에 토큰의 소유자 정보와 권한이 담겨있음을 명시
+    * */
+    public String removeBearer(String bearerToken) {
+        if (bearerToken == null || !bearerToken.startsWith("Bearer ")) {
+            throw new RuntimeException("Invalid JWT token format");
+        }
 
-    public String removeBearer(String authorizationHeader) {
+        // substring(N): N부터 끝까지의 문자열을 리턴
+        // substring(a, b): a 이상 b 미만까지의 문자열을 리턴
+        return bearerToken.substring("Bearer ".length());
     }
 
+    /*
+    * == isValidToken ==
+    * : JWT 유효성 검증
+    * - Bearer이 제거된 서명키 자체의 유효성을 검증
+    *
+    * @Param: token - JWT 토큰(Bearer 없음)
+    * @Return: 유효하면 true, 유효하지 않으면 false
+    * */
     public boolean isValidToken(String token) {
+        try {
+            getClaims(token); // JWT 클레임을 가져오면서 유효성 검증
+            return true;
+
+        } catch (Exception e) {
+            return false;
+        }
     }
 
-    public String getUsernameFromJwt(String token) {
-        return null;
+    /*
+    * == getClaims ==
+    * : JWT 클레임 정보를 가져오기
+    *
+    * @Param: token
+    * @Return: 클레임 정보
+    * */
+    public Claims getClaims(String token) {
+        JwtParser jwtParser = Jwts.parserBuilder()
+                .setSigningKey(key) // JWT 파서에 서명에 사용된 비밀키 설정
+                .build();
+
+        // JWT를 파싱하여 클레임 정보(body)를 반환
+        return jwtParser.parseClaimsJws(token).getBody();
     }
+
+    /*
+    * === getUsernameFromJwt ===
+    * : JWT 검증 + 사용자 ID 추출
+    *
+    * @Param: JWT 토큰
+    * @Return: 사용자 ID
+    * */
+    public String getUsernameFromJwt(String token) {
+
+        Claims claims = getClaims(token);
+        return claims.get("username", String.class); // 클레임에서 username 값을 문자열 형태로 반환
+    }
+
 }
