@@ -60,6 +60,32 @@ public class N_REST_API {
 /*
 * ===== REST API 예시 =====
 *
+* cf) 실무에서 많이 사용되는 RESTful API 경로 형식
+* - /me
+*       : 현재 로그인한 사용자의 리소스에 접근할 때 사용
+*       ex) 로그인한 사용자 정보 조회(내 정보 조회): api/v1/users/me (GET)
+*           로그인한 사용자의 비밀번호 변경: api/v1/users/me/password (PUT)
+*           로그인한 사용자의 설정 정보에 접근: api/v1/users/me/settings
+*
+* - /profile, /settings
+*       : 프로필 정보를 나타낼 때 자주 사용, 설정 정보에 접근할 때 사용
+*       ex) 1번 회원의 프로필 정보 조회: api/v1/users/1/profile
+*
+* - /auth
+*       : 인증 관련 처리(로그인, 로그아웃, 회원가입, 이메일 중복 체크 등)
+*       ex) /api/v1/auth/login
+*       ex) /api/v1/auth/logout
+*       ex) /api/v1/auth/signup
+*           /api/v1/auth/check-email?email=test@example.com
+*
+* - /dashboard
+*       : 로그인 한 사용자의 대시보드 정보 조회
+*
+* - /account
+*       : 계정 정보 관련 작업
+*       ex) /account/deactivate
+*           /account/settings
+*
 * 1) 사용자(User) 관련 REST API
 * - 사용자 목록 조회: GET /api/v1/users
 * - 특정 사용자 조회: GET /api/v1/users/{id}

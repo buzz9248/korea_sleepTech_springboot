@@ -63,6 +63,48 @@ CREATE TABLE IF NOT EXISTS users (
     updated_at DATETIME
 );
 
+use springboot_db;
+select * from users;
+
+-- authority(권한) 관련 테이블 --
+# 권한 관리 테이블 설계(정규화 방식)
+# : 권한 종류를 roles 테이블로 분리
+# 	, 이를 참조하여 user_roles 테이블에 저장
+# > 역할 이름을 고유값으로 관리, role_id를 통해 연결
+CREATE TABLE IF NOT EXISTS roles (
+	role_id BIGINT AUTO_INCREMENT PRIMARY KEY, -- 역할 고유 ID
+    role_name VARCHAR(50) NOT NULL UNIQUE 	   -- 역할 이름 (ex. ADMIN, USER), 중복 불가
+);
+
+INSERT INTO roles (role_name)
+VALUES
+	('USER'), ('ADMIN'), ('MANAGER');
+
+
+# 해당 테이블은 사용자와 역할의 관계를 나타내는 중간 테이블
+# : 사용자 한 명이 여러 역할을 가질 수 있고,
+#	, 하나의 역할도 여러 사용자에게 부여될 수 있음
+# > 다대다(ManyToMany) 관계
+CREATE TABLE IF NOT EXISTS user_roles (
+	user_id BIGINT NOT NULL,
+	role_id BIGINT NOT NULL,
+    PRIMARY KEY (user_id, role_id), -- 복합 기본키: 중복 매핑 방지
+    CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_role FOREIGN KEY (role_id) REFERENCES roles(role_id) ON DELETE CASCADE  
+);
+
+select * from roles;
+select * from user_roles;
+select * from users;
+
+
+
+
+
+
+
+
+
 
 
 
