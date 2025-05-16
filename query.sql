@@ -93,10 +93,30 @@ CREATE TABLE IF NOT EXISTS user_roles (
     CONSTRAINT fk_role FOREIGN KEY (role_id) REFERENCES roles(role_id) ON DELETE CASCADE  
 );
 
+use springboot_db;
+
 select * from roles;
 select * from user_roles;
 select * from users;
+select * from role_change_logs;
 
+-- log(기록) 테이블 --
+# 권한 변경 시 기록(로그) 테이블에 자동 저장
+CREATE TABLE IF NOT EXISTS role_change_logs (
+	id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NOT NULL, -- 권한이 변경된 사용자 ID(PK)
+    email VARCHAR(255) NOT NULL, -- 사용자 이메일
+    prev_roles TEXT,
+    new_roles TEXT,
+    changed_by VARCHAR(255) NOT NULL, -- 변경을 수행한 관리자 이메일
+    change_type VARCHAR(255) NOT NULL, -- 변경 유형(ADD, REMOVE, UPDATE)
+    change_reason VARCHAR(255), -- 변경 사유(필요 시 사용)
+    changed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+use seniya_db;
+select * from users;
 
 
 
