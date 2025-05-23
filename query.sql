@@ -115,10 +115,44 @@ CREATE TABLE IF NOT EXISTS role_change_logs (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
-use seniya_db;
 select * from users;
 
+# ---------------------------------------------------------------------------------------------------------------------------
+# 파일 시스템
 
+CREATE TABLE IF NOT EXISTS posts (
+	id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    content TEXT NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS communities (
+	id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    content TEXT NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS upload_files (
+	id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    original_name VARCHAR(255) NOT NULL, -- 사용자가 업로드한 원래 이름
+    file_name VARCHAR(255) NOT NULL, -- 서버에 저장된 이름
+    file_path VARCHAR(500) NOT NULL, -- 전체 경로 또는 상대 경로
+    file_type VARCHAR(100), -- MIME 타입 (image/png)
+    file_size BIGINT NOT NULL, -- 파일 크기(bytes)
+    
+    target_id BIGINT NOT NULL,
+    target_type ENUM('POST', 'COMMUNITY') NOT NULL,
+    
+    INDEX idx_target (target_type, target_id)
+);
+
+select * from posts;
+select * from communities;
+select * from upload_files;
 
 
 
