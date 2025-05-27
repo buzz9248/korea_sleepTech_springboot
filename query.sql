@@ -2,6 +2,107 @@
 create database if not exists springboot_db;
 use springboot_db;
 
+-- 주문 관리 시스템 (트랜잭션, 트리거, 인덱스, 뷰 학습)
+CREATE TABLE IF NOT EXISTS products(
+	id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    price INT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS stocks(
+	id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    product_id BIGINT NOT NULL,
+    quantity INT NOT NULL,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+);
+
+-- drop table orders;
+-- drop table order_items;
+-- drop table order_logs;
+
+CREATE TABLE IF NOT EXISTS orders(
+	id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    order_status VARCHAR(20) NOT NULL DEFAULT 'PENDING',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS order_items(
+	id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    order_id BIGINT NOT NULL,
+    product_id BIGINT NOT NULL,
+    quantity INT NOT NULL,
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS order_logs(
+	id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    order_id BIGINT NOT NULL,
+    message VARCHAR(255),
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
+);
+
+# 초기 데이터 삽입 스크립트 #
+-- 기본 상품 등록
+INSERT INTO products (name, price)
+VALUES 
+	('슬립테크 매트리스', 120),
+    ('수면 측정 기기', 45),
+    ('아로마 수면램프', 30);
+
+-- 재고 등록
+INSERT INTO stocks (product_id, quantity)
+VALUES
+	(1, 100),
+    (2, 30),
+    (3, 45);
+
+# 인덱스 추가 (제품명 순서로 빠르게 검색하는 인덱스 추가)
+CREATE INDEX idx_product_name ON products(name);
+
+# 주문 요약 뷰 생성
+CREATE OR REPLACE VIEW order_summary AS
+SELECT
+	o.id AS order_id, o.user_id, p.name AS product_name, oi.quantity, p.price
+    , (oi.quantity * p.price) AS total_price
+FROM
+	orders o
+    JOIN order_items oi ON o.id = oi.order_id
+    JOIN products p ON oi.product_id = p.id;
+
+# 주문 생성 트리거
+DELIMITER //
+
+DROP TRIGGER IF EXISTS trg_after_order_insert;
+
+CREATE TRIGGER trg_after_order_insert
+AFTER INSERT ON orders
+FOR EACH ROW
+BEGIN
+  INSERT INTO order_logs(order_id, message)
+  VALUES (NEW.id, CONCAT('주문이 생성되었습니다. 주문 ID: ', NEW.id));
+END;
+//
+
+DELIMITER ;
+
+
+
+
+
+select * from products;
+select * from stocks;
+select * from orders;
+select * from order_items;
+select * from order_logs;
+
+# ======================================================================================
+
 CREATE TABLE IF NOT EXISTS test (
 	id BIGINT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(50) NOT NULL
