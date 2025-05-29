@@ -1,6 +1,6 @@
 package com.example.korea_sleepTech_springboot.service.implementations;
 
-import com.example.korea_sleepTech_springboot.common.ResponseMessage;
+import com.example.korea_sleepTech_springboot.common.constants.ResponseMessage;
 import com.example.korea_sleepTech_springboot.dto.admin.request.PutAuthorityReqDto;
 import com.example.korea_sleepTech_springboot.dto.admin.response.DemoteToAdminRespDto;
 import com.example.korea_sleepTech_springboot.dto.admin.response.PromoteToAdminRespDto;

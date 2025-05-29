@@ -1,13 +1,12 @@
 package com.example.korea_sleepTech_springboot.controller;
 
-import com.example.korea_sleepTech_springboot.common.ApiMappingPattern;
+import com.example.korea_sleepTech_springboot.common.constants.ApiMappingPattern;
 import com.example.korea_sleepTech_springboot.dto.response.ResponseDto;
 import com.example.korea_sleepTech_springboot.dto.user.request.UserUpdateReqDto;
 import com.example.korea_sleepTech_springboot.dto.user.response.GetUserRespDto;
 import com.example.korea_sleepTech_springboot.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;

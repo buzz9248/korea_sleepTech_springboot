@@ -1,6 +1,6 @@
 package com.example.korea_sleepTech_springboot.controller;
 
-import com.example.korea_sleepTech_springboot.common.ApiMappingPattern;
+import com.example.korea_sleepTech_springboot.common.constants.ApiMappingPattern;
 import com.example.korea_sleepTech_springboot.dto.request.BookCreateReqDto;
 import com.example.korea_sleepTech_springboot.dto.request.BookUpdateReqDto;
 import com.example.korea_sleepTech_springboot.dto.response.BookRespDto;

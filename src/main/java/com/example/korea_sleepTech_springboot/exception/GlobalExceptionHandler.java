@@ -25,12 +25,20 @@ public class GlobalExceptionHandler {
     // 400 - 잘못된 요청 (Bad Request)
     // : 잘못된 인자가 전달(IllegalArgumentException)되거나 DTO 검증 실패(MethodArgumentNotValidException) 시
     // cf) @Valid 애너테이션으로 오류 발생 시 MethodArgumentNotValidException
-    @ExceptionHandler({IllegalArgumentException.class, MethodArgumentNotValidException.class, IllegalStateException.class})
+    @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class})
     public ResponseEntity<ResponseDto<?>> handleBadRequestException(Exception e) {
         e.printStackTrace();
         ResponseDto<?> response = ResponseDto.setFailed("Bad Request: " + e.getMessage());
         return ResponseEntity.badRequest().body(response);
     }
+
+    @ExceptionHandler({MethodArgumentNotValidException.class})
+    public ResponseEntity<ResponseDto<?>> handleValidationException(Exception e) {
+        e.printStackTrace();
+        ResponseDto<?> response = ResponseDto.setFailed("Validation Failed: " + e.getMessage());
+        return ResponseEntity.badRequest().body(response);
+    }
+
 
     // 403 - 권한 없음: 인증되지 않은 사용자가 접근하려고 할 때
     @ExceptionHandler(AccessDeniedException.class)

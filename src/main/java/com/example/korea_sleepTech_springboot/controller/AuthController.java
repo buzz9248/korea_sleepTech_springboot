@@ -1,6 +1,6 @@
 package com.example.korea_sleepTech_springboot.controller;
 
-import com.example.korea_sleepTech_springboot.common.ApiMappingPattern;
+import com.example.korea_sleepTech_springboot.common.constants.ApiMappingPattern;
 import com.example.korea_sleepTech_springboot.dto.auth.PasswordResetReqDto;
 import com.example.korea_sleepTech_springboot.dto.auth.SendMailReqDto;
 import com.example.korea_sleepTech_springboot.dto.response.ResponseDto;

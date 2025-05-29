@@ -1,6 +1,6 @@
 package com.example.korea_sleepTech_springboot.service.implementations;
 
-import com.example.korea_sleepTech_springboot.common.ResponseMessage;
+import com.example.korea_sleepTech_springboot.common.constants.ResponseMessage;
 import com.example.korea_sleepTech_springboot.dto.request.CommentCreateReqDto;
 import com.example.korea_sleepTech_springboot.dto.request.CommentUpdateReqDto;
 import com.example.korea_sleepTech_springboot.dto.response.CommentRespDto;

@@ -1,6 +1,6 @@
 package com.example.korea_sleepTech_springboot.service.implementations;
 
-import com.example.korea_sleepTech_springboot.common.ResponseMessage;
+import com.example.korea_sleepTech_springboot.common.constants.ResponseMessage;
 import com.example.korea_sleepTech_springboot.dto.auth.PasswordResetReqDto;
 import com.example.korea_sleepTech_springboot.dto.response.ResponseDto;
 import com.example.korea_sleepTech_springboot.dto.user.request.UserSignInReqDto;
@@ -16,7 +16,6 @@ import com.example.korea_sleepTech_springboot.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
